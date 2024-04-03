@@ -7,19 +7,18 @@ public class CardManager : MonoBehaviour
     public static CardManager Inst { get; private set; }
     void Awake() => Inst = this;
 
-    [SerializeField] ItemSO itemSO; // Ä«µåµéÀÇ Á¤º¸¸¦ ´ãÀ½
-    [SerializeField] GameObject cardPrefab; //Ä«µå ÇÁ¸®ÆÕ
-    [SerializeField] List<Card> myCards; //ÇÃ·¹ÀÌ¾îÀÇ Ä«µå ¸®½ºÆ®
-    [SerializeField] List<Card> otherCards; //»ó´ë¹æÀÇ Ä«µå ¸®½ºÆ®
-    [SerializeField] Transform cardSpawnPoint; //Ä«µå°¡ »ı¼ºµÉ À§Ä¡
-    [SerializeField] Transform myCardLeft; //ÇÃ·¹ÀÌ¾î Ä«µå ¿ŞÂÊ Á¤·Ä ±âÁØ
-    [SerializeField] Transform myCardRight; //ÇÃ·¹ÀÌ¾î Ä«µå ¿À¸¥ÂÊ Á¤·Ä ±âÁØ
-    [SerializeField] Transform OtherCardLeft; //»ó´ë¹æ Ä«µå ¿ŞÂÊ Á¤·Ä ±âÁØ
-    [SerializeField] Transform OtherCardRight; //»ó´ğ¾Æ Ä«µå ¿À¸¥ÂÊ Á¤·Ä ±âÁØ
+    [SerializeField] ItemSO itemSO; 
+    [SerializeField] GameObject cardPrefab; 
+    [SerializeField] List<Card> myCards; 
+    [SerializeField] List<Card> otherCards; 
+    [SerializeField] Transform cardSpawnPoint; 
+    [SerializeField] Transform myCardLeft; 
+    [SerializeField] Transform myCardRight; 
+    [SerializeField] Transform OtherCardLeft; 
+    [SerializeField] Transform OtherCardRight; 
+    List<Item> itemBuffer; 
 
-    List<Item> itemBuffer; //¹öÆÛ ¸®½ºÆ®
-
-    //Ä«µå ÃßÃâ ¸Ş¼­µå
+    
     public Item PopItem()
     {
         if (itemBuffer.Count == 0)
@@ -31,7 +30,7 @@ public class CardManager : MonoBehaviour
     }
 
 
-    //Ä«µå ¹öÆÛ¸¦ ÃÊ±âÈ­ ÇÏ´Â ¸Ş¼­µå
+    
     void SetupItemBuffer()
     {
         itemBuffer = new List<Item>(100);
@@ -59,24 +58,39 @@ public class CardManager : MonoBehaviour
     void Update()
     {
         {
-            if (Input.GetKeyDown(KeyCode.LeftAlt)) //¿ŞÂÊ ALT ´©¸£¸é ³»Ä«µå¸¦ Ãß°¡
+            if (Input.GetKeyDown(KeyCode.LeftAlt)) 
                 AddCard(true);
 
-            if (Input.GetKeyDown(KeyCode.LeftControl)) //¿ŞÂÊ CTRLÀ» ´©¸£¸é »ó´ë¹æ Ä«µå¸¦ Ãß°¡
+            if (Input.GetKeyDown(KeyCode.LeftControl)) 
                 AddCard(false);
         }
     }
 
-    //Ä«µå¸¦ Ãß°¡ÇÏ´Â ¸Ş¼­µå
+   
     void AddCard(bool isMine)
     {
+    
+
+        /*if(isMine && myCards.Count >=10)
+        {
+            Debug.Log("ì¹´ë“œ ë½‘ê¸° ë¶ˆê°€");
+            return;
+        }
+        else if (!isMine&&otherCards.Count>=10)
+        {
+            Debug.Log("ìƒëŒ€ ë± ê°€ë“ì°¸");
+            return;
+        }*/ //10ì¥ ë˜ë©´ ë“œë¡œìš° ë”ì´ìƒ ëª»í•˜ê²Œ
+
         var cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI);
         var card = cardObject.GetComponent<Card>();
         card.Setup(PopItem(), isMine);
         (isMine ? myCards : otherCards).Add(card);
 
-        SetOriginOrder(isMine); //Á¤·Ä ¼ø¼­ ¼³Á¤
-        CardAlignment(isMine); //Ä«µå Á¤·Ä
+
+
+        SetOriginOrder(isMine); 
+        CardAlignment(isMine); 
     }
 
     void SetOriginOrder (bool isMine)
@@ -89,7 +103,7 @@ public class CardManager : MonoBehaviour
         }
     }
 
-    //Ä«µå Á¤·ÄÀ» ´ã´çÇÏ´Â ¸Ş¼­µå
+    //
     void CardAlignment(bool isMine)
     {
         List<PRS> originCardPRSs = new List<PRS>();
@@ -112,7 +126,7 @@ public class CardManager : MonoBehaviour
     }
     
 
-    //Ä«µå¸¦ ¿øÇüÀ¸·Î Á¤·ÄÇÏ´Â ¸Ş¼­µå
+//
     List<PRS> RoundAlignment(Transform leftTr, Transform rightTr, int objCount, float height, Vector3 scale)
     {
         float[] objLerps=new float[objCount];
